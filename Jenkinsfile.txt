@@ -2,33 +2,32 @@ pipeline {
     agent any
 
     environment {
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        NETLIFY_SITE_ID = '4a28f0ed-7112-488e-8aa0-fa90ed5c686e'  // Replace with your actual Site ID
+        NETLIFY_AUTH_TOKEN = credentials('netlify-auth-token')
+        NETLIFY_SITE_ID = credentials('netlify-site-id')
     }
 
     stages {
         stage('Clone Repo') {
             steps {
-                git branch: 'main', url: 'https://github.com/VIN-AI-DS/jenkins-static-site.git'
-
+                git 'https://github.com/VIN-AI-DS/jenkins-static-site.git'
             }
         }
 
         stage('Install Netlify CLI') {
             steps {
-                bat 'npm install -g netlify-cli'
+                bat 'npm install netlify-cli' // install locally in project folder
             }
         }
 
         stage('Deploy to Netlify') {
             steps {
                 dir('jenkins-static-site') {
-                    bat '''
-                        netlify deploy --prod \
-                          --dir=. \
-                          --auth=$NETLIFY_AUTH_TOKEN \
-                          --site=$NETLIFY_SITE_ID
-                    '''
+                    bat """
+                        npx netlify deploy --prod ^
+                        --dir=. ^
+                        --auth=%NETLIFY_AUTH_TOKEN% ^
+                        --site=%NETLIFY_SITE_ID%
+                    """
                 }
             }
         }
