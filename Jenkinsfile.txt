@@ -16,14 +16,14 @@ pipeline {
 
         stage('Install Netlify CLI') {
             steps {
-                sh 'npm install -g netlify-cli'
+                bat 'npm install -g netlify-cli'
             }
         }
 
         stage('Deploy to Netlify') {
             steps {
                 dir('jenkins-static-site') {
-                    sh '''
+                    bat '''
                         netlify deploy --prod \
                           --dir=. \
                           --auth=$NETLIFY_AUTH_TOKEN \
