@@ -1,23 +1,36 @@
-﻿pipeline {
+pipeline {
     agent any
 
+    environment {
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        NETLIFY_SITE_ID = '4a28f0ed-7112-488e-8aa0-fa90ed5c686e'  // Replace with your actual Site ID
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Clone Repo') {
             steps {
-                git 'https://github.com/YOUR_USERNAME/jenkins-static-site.git'
+                git 'https://github.com/VIN-AI-DS/jenkins-static-site.git'
             }
         }
 
-        stage('Build') {
+        stage('Install Netlify CLI') {
             steps {
-                echo 'No build step needed for static site.'
+                sh 'npm install -g netlify-cli'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to Netlify') {
             steps {
-                echo 'You can deploy this site to GitHub Pages or Render.'
+                dir('jenkins-static-site') {
+                    sh '''
+                        netlify deploy --prod \
+                          --dir=. \
+                          --auth=$NETLIFY_AUTH_TOKEN \
+                          --site=$NETLIFY_SITE_ID
+                    '''
+                }
             }
         }
     }
 }
+
