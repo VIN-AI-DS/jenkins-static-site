@@ -1,0 +1,23 @@
+﻿pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/YOUR_USERNAME/jenkins-static-site.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'No build step needed for static site.'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'You can deploy this site to GitHub Pages or Render.'
+            }
+        }
+    }
+}
